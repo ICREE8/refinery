@@ -2,14 +2,8 @@
 	import type { TacticalMaintenanceMetrics, Site } from '$lib/types/kpi';
 	import { 
 		Wrench, 
-		Clock, 
-		Cpu, 
 		CheckCircle, 
-		AlertCircle, 
-		Sliders, 
-		ShieldCheck, 
-		Zap,
-		ChevronRight
+		ShieldCheck
 	} from 'lucide-svelte';
 
 	let { 
@@ -23,7 +17,7 @@
 	let isRefinery = $derived(site.type === 'refinery');
 
 	// Specific critical equipment units for Venezuelan facilities
-	const equipmentItems = isRefinery ? [
+	let equipmentItems = $derived(isRefinery ? [
 		{ tag: 'H-101', name: 'Atmospheric Crude Fired Heater', status: 'normal', runHours: 4210, healthPct: 97, lastPMRound: 'Yesterday' },
 		{ tag: 'T-102', name: 'Vacuum Flasher Tower & Bottoms Pump', status: 'attention', runHours: 7380, healthPct: 91, lastPMRound: '3 days ago' },
 		{ tag: 'E-201A/B', name: 'Crude-Preheat Exchanger Train', status: 'normal', runHours: 5120, healthPct: 95, lastPMRound: 'Today' },
@@ -33,7 +27,7 @@
 		{ tag: 'P-204B', name: 'Ethylene Quench Water Primary Circulation', status: 'attention', runHours: 3290, healthPct: 88, lastPMRound: 'Yesterday' },
 		{ tag: 'R-301', name: 'Polyethylene Fluidized Bed Reactor Line 2', status: 'normal', runHours: 4890, healthPct: 94, lastPMRound: 'Today' },
 		{ tag: 'EL-104', name: 'Chlor-Alkali Electrolysis Cellroom Train A', status: 'normal', runHours: 7800, healthPct: 95, lastPMRound: '2 days ago' }
-	];
+	]);
 </script>
 
 <div class="bg-white rounded-xl border border-slate-200 shadow-xs p-5">

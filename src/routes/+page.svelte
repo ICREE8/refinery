@@ -15,14 +15,9 @@
 		Flame, 
 		FlaskConical, 
 		MapPin, 
-		TrendingUp, 
 		ArrowRight, 
 		ShieldCheck, 
 		Activity, 
-		Cpu, 
-		BarChart3,
-		ChevronRight,
-		CheckCircle2,
 		Layers
 	} from 'lucide-svelte';
 
@@ -52,7 +47,13 @@
 
 	let isIntakeOpen = $state(false);
 	let isBriefOpen = $state(false);
-	let activeModalSite = $state<Site>(sites[0] || INITIAL_SITES[0]);
+	let activeModalSite = $state<Site>(INITIAL_SITES[0]);
+
+	$effect(() => {
+		if (sites.length > 0 && activeModalSite.id === INITIAL_SITES[0].id && sites[0].id !== INITIAL_SITES[0].id) {
+			activeModalSite = sites[0];
+		}
+	});
 
 	let briefData = $derived(
 		generateShiftBrief(
@@ -304,7 +305,7 @@
 		site={activeModalSite}
 		kpiDefinitions={INITIAL_KPI_DEFINITIONS.filter(d => d.site_type === activeModalSite.type)}
 		onClose={() => isIntakeOpen = false}
-		onDataIngested={() => {}}
+		onDataIngested={() => { allRows = getInMemorySummaryRows(); }}
 	/>
 
 	<!-- Executive Shift Brief Modal -->

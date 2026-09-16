@@ -75,6 +75,34 @@ create policy "Allow read access to authenticated users" on public.sites for sel
 create policy "Allow read access to kpis" on public.kpi_definitions for select using (true);
 create policy "Allow read access to values" on public.kpi_values for select using (true);
 
+-- Role-Based Write Security (Sensitive Telemetry Protection)
+-- Only verified operators or admins assigned to the specific site may insert or update telemetry
+create policy "Enforce operator/admin RLS on telemetry insert"
+on public.kpi_values for insert
+with check (
+    auth.uid() is not null and (
+        exists (
+            select 1 from public.user_sites us
+            where us.user_id = auth.uid()
+            and us.site_id = public.kpi_values.site_id
+            and us.role in ('admin', 'operator')
+        )
+    )
+);
+
+create policy "Enforce operator/admin RLS on telemetry update"
+on public.kpi_values for update
+using (
+    auth.uid() is not null and (
+        exists (
+            select 1 from public.user_sites us
+            where us.user_id = auth.uid()
+            and us.site_id = public.kpi_values.site_id
+            and us.role in ('admin', 'operator')
+        )
+    )
+);
+
 -- Daily Summary View for Reporting & Analytics
 create or replace view public.v_daily_site_summary as
 select

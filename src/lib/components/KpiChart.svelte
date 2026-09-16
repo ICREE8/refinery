@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { SiteSummaryRow } from '$lib/types/kpi';
-	import { Calendar, Filter, Layers, Maximize2, ShieldCheck } from 'lucide-svelte';
 
 	let { 
 		kpi, 
@@ -172,6 +171,8 @@
 	<!-- Responsive SVG Chart Canvas -->
 	<div class="relative w-full overflow-hidden select-none">
 		<svg 
+			role="img"
+			aria-label={`${kpi.kpi_name} time-series chart`}
 			viewBox={`0 0 ${svgWidth} ${svgHeight}`} 
 			class="w-full h-auto overflow-visible"
 			onmouseleave={() => hoveredIndex = null}
@@ -323,6 +324,8 @@
 
 				<!-- Invisible Hit Target for Hover -->
 				<rect 
+					role="presentation"
+					aria-hidden="true"
 					x={x - (plotWidth / filteredHistory.length) / 2} 
 					y={padTop} 
 					width={plotWidth / filteredHistory.length} 

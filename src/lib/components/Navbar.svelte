@@ -1,14 +1,10 @@
 <script lang="ts">
 	import type { Site } from '$lib/types/kpi';
-	import { page } from '$app/stores';
 	import { 
-		Flame, 
 		Activity, 
 		Layers, 
-		PlusCircle, 
 		UploadCloud, 
 		FileText, 
-		ExternalLink,
 		CheckCircle2,
 		Radio,
 		ChevronDown
@@ -66,6 +62,9 @@
 
 					{#if isDropdownOpen}
 						<div 
+							role="menu"
+							tabindex="-1"
+							aria-label="Managed Downstream Facilities"
 							class="absolute left-0 mt-1 w-72 rounded-lg bg-white border border-slate-200 shadow-lg py-1 z-50 animate-in fade-in zoom-in-95 duration-150"
 							onmouseleave={() => isDropdownOpen = false}
 						>

@@ -8,9 +8,7 @@
 		PlusCircle, 
 		Check, 
 		AlertTriangle,
-		Database,
-		FileText,
-		CheckCircle2
+		Database
 	} from 'lucide-svelte';
 
 	let { 

@@ -17,16 +17,8 @@
 		Flame, 
 		FlaskConical, 
 		MapPin, 
-		Calendar, 
-		Clock, 
 		FileText, 
-		UploadCloud, 
-		Target, 
-		TrendingUp,
-		Radio,
-		Activity,
-		ShieldCheck,
-		RefreshCw
+		UploadCloud
 	} from 'lucide-svelte';
 	import { invalidateAll } from '$app/navigation';
 

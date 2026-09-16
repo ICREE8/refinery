@@ -7,8 +7,7 @@
 		CheckCircle2, 
 		ShieldAlert, 
 		Minus,
-		Target,
-		BarChart3
+		Target
 	} from 'lucide-svelte';
 
 	let { 
