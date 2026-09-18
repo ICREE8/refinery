@@ -27,7 +27,7 @@
 
 	let activeTab = $state<'manual' | 'csv'>('manual');
 	
-	// Manual Entry State
+	// Estado de Entrada Manual
 	let selectedKpiCode = $state('');
 
 	$effect(() => {
@@ -41,7 +41,7 @@
 	let entryNotes = $state('');
 	let manualSuccess = $state(false);
 
-	// CSV Entry State
+	// Estado de Entrada CSV
 	let csvText = $state('');
 	let parsedRows = $state<any[]>([]);
 	let csvError = $state<string | null>(null);
@@ -49,13 +49,13 @@
 
 	let currentSelectedDef = $derived(kpiDefinitions.find(d => d.code === selectedKpiCode));
 
-	// Preset sample CSV template for the facility
+	// Plantilla CSV predeterminada para la instalación
 	let sampleCsv = $derived.by(() => {
 		const today = new Date().toISOString().split('T')[0];
 		if (site.type === 'refinery') {
-			return `entry_date,kpi_code,value,notes\n${today},CRUDE_THROUGHPUT,15420,Desalter running at 100% throughput\n${today},VACUUM_YIELD,63.1,Target cut-point achieved on vacuum bottoms\n${today},ASPHALT_PROD,1460,Paving asphalt rundown into Tank 501\n${today},API_GRAVITY,12.4,Boscan heavy parcel delivery`;
+			return `entry_date,kpi_code,value,notes\n${today},CRUDE_THROUGHPUT,15650,Desalador operando a plena carga\n${today},VACUUM_YIELD,63.1,Corte de fondo de vacío en especificación\n${today},ASPHALT_PROD,1460,Bombeo de asfalto AC-20 al Tanque 501\n${today},API_GRAVITY,12.4,Cargamento Boscán pesado recibido en patio`;
 		} else {
-			return `entry_date,kpi_code,value,notes\n${today},ETHYLENE_TONS,1620,Steam cracker trains operating nominal\n${today},PE_YIELD,94.5,High density polyethylene polymerization on spec\n${today},UREA_FERTILIZER,2250,Granulation line A & B online\n${today},STEAM_INTENSITY,3.95,Boiler heat recovery operating efficiently`;
+			return `entry_date,kpi_code,value,notes\n${today},ETHYLENE_TONS,1620,Trenes de craqueo con vapor nominales\n${today},PE_YIELD,94.5,Polietileno de alta densidad en especificación\n${today},UREA_FERTILIZER,2250,Granulación de fertilizantes línea A y B activa\n${today},STEAM_INTENSITY,3.95,Calderas de recuperación operando eficientemente`;
 		}
 	});
 
@@ -73,7 +73,7 @@
 		try {
 			const lines = csvText.trim().split('\n').map(l => l.trim()).filter(Boolean);
 			if (lines.length < 2) {
-				csvError = 'CSV must contain a header row and at least one data row.';
+				csvError = 'El CSV debe contener una fila de encabezado y al menos una fila de datos.';
 				return;
 			}
 
@@ -84,7 +84,7 @@
 			const notesIdx = header.indexOf('notes');
 
 			if (dateIdx === -1 || codeIdx === -1 || valIdx === -1) {
-				csvError = 'Header must include "entry_date", "kpi_code", and "value" columns.';
+				csvError = 'El encabezado debe incluir las columnas "entry_date", "kpi_code" y "value".';
 				return;
 			}
 
@@ -97,7 +97,7 @@
 					const val = parseFloat(cols[valIdx]);
 
 					if (isNaN(val)) {
-						csvError = `Row ${i + 1}: Invalid numerical value "${cols[valIdx]}"`;
+						csvError = `Fila ${i + 1}: Valor numérico inválido "${cols[valIdx]}"`;
 						return;
 					}
 
@@ -114,13 +114,13 @@
 
 			parsedRows = rows;
 		} catch (e: any) {
-			csvError = `CSV parsing error: ${e.message}`;
+			csvError = `Error al procesar CSV: ${e.message}`;
 		}
 	}
 
 	function handleManualSubmit() {
 		if (!entryValue || isNaN(Number(entryValue))) {
-			alert('Please enter a valid numeric value');
+			alert('Por favor ingrese un valor numérico válido');
 			return;
 		}
 
@@ -197,15 +197,15 @@
 		<div 
 			class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200"
 		>
-			<!-- Header -->
+			<!-- Encabezado del Modal -->
 			<div class="px-6 py-4 border-b border-slate-200 bg-slate-50/80 flex items-center justify-between">
 				<div class="flex items-center space-x-3">
 					<div class="w-9 h-9 rounded-lg bg-sky-100 border border-sky-200 text-sky-800 flex items-center justify-center">
 						<Database class="w-5 h-5" />
 					</div>
 					<div>
-						<h2 class="text-base font-bold text-slate-900">Shift Telemetry & Data Intake</h2>
-						<p class="text-xs text-slate-500">Ingest operational readings for {site.name} (Pivot 4)</p>
+						<h2 class="text-base font-bold text-slate-900">Carga de Datos y Telemetría Operacional</h2>
+						<p class="text-xs text-slate-500">Registrar mediciones operativas para {site.name}</p>
 					</div>
 				</div>
 				<button 
@@ -216,7 +216,7 @@
 				</button>
 			</div>
 
-			<!-- Nav Tabs -->
+			<!-- Pestañas de Navegación -->
 			<div class="flex border-b border-slate-200 px-6 pt-3 bg-white">
 				<button 
 					onclick={() => activeTab = 'manual'}
@@ -227,7 +227,7 @@
 					}`}
 				>
 					<PlusCircle class="w-4 h-4" />
-					<span>Operator Manual Log</span>
+					<span>Registro Manual de Operador</span>
 				</button>
 				<button 
 					onclick={() => activeTab = 'csv'}
@@ -238,21 +238,21 @@
 					}`}
 				>
 					<FileSpreadsheet class="w-4 h-4" />
-					<span>Batch CSV / SCADA Ingest</span>
+					<span>Carga Masiva CSV / SCADA</span>
 				</button>
 			</div>
 
-			<!-- Tab Body -->
+			<!-- Cuerpo de las Pestañas -->
 			<div class="p-6 overflow-y-auto space-y-4">
 				
 				{#if activeTab === 'manual'}
 					<form onsubmit={(e) => { e.preventDefault(); handleManualSubmit(); }} class="space-y-4">
 						
 						<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-							<!-- Target KPI -->
+							<!-- KPI Seleccionado -->
 							<div>
 								<label for="kpi-select" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
-									Process KPI Metric
+									Métrica / Parámetro de Proceso
 								</label>
 								<select 
 									id="kpi-select"
@@ -265,10 +265,10 @@
 								</select>
 							</div>
 
-							<!-- Shift Date -->
+							<!-- Fecha de la Guardia -->
 							<div>
 								<label for="entry-date" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
-									Entry Date
+									Fecha de la Guardia
 								</label>
 								<input 
 									id="entry-date"
@@ -279,40 +279,40 @@
 							</div>
 						</div>
 
-						<!-- Metric Target Context Banner -->
+						<!-- Contexto de Metas -->
 						{#if currentSelectedDef}
 							<div class="rounded-lg p-3 bg-slate-50 border border-slate-200/80 flex items-center justify-between text-xs">
-								<span class="text-slate-500">Benchmark Target: <strong class="text-slate-800">{currentSelectedDef.target_value} {currentSelectedDef.unit}</strong></span>
-								<span class="text-slate-500">Warning Bounds: <strong class="text-amber-700">{currentSelectedDef.min_warning ?? 'None'} — {currentSelectedDef.max_warning ?? 'None'}</strong></span>
+								<span class="text-slate-500">Meta en Presupuesto: <strong class="text-slate-800">{currentSelectedDef.target_value} {currentSelectedDef.unit}</strong></span>
+								<span class="text-slate-500">Rango de Alerta: <strong class="text-amber-700">{currentSelectedDef.min_warning ?? 'Ninguno'} — {currentSelectedDef.max_warning ?? 'Ninguno'}</strong></span>
 							</div>
 						{/if}
 
-						<!-- Value Input -->
+						<!-- Entrada de Valor -->
 						<div>
 							<label for="recorded-value" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
-								Recorded Value ({currentSelectedDef?.unit || ''})
+								Valor Registrado ({currentSelectedDef?.unit || ''})
 							</label>
 							<input 
 								id="recorded-value"
 								type="number" 
 								step="any"
-								placeholder={`e.g. ${currentSelectedDef?.target_value ?? '100'}`}
+								placeholder={`p. ej. ${currentSelectedDef?.target_value ?? '100'}`}
 								bind:value={entryValue}
 								required
 								class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-base font-mono font-bold text-slate-900 focus:outline-sky-600"
 							/>
 						</div>
 
-						<!-- Shift Notes -->
+						<!-- Observaciones -->
 						<div>
 							<label for="entry-notes" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
-								Shift Log Notes & Operator Observations
+								Bitácora de Campo y Novedades del Turno
 							</label>
 							<textarea 
 								id="entry-notes"
 								rows="3" 
 								bind:value={entryNotes}
-								placeholder="e.g. Tanker parcel offloading, pre-heater burner adjustments, unit inspection pass..."
+								placeholder="p. ej. Despacho a buque tanquero completado, ajuste en quemadores de horno, inspección de sellos mecánicos..."
 								class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-800 focus:outline-sky-600 resize-none"
 							></textarea>
 						</div>
@@ -323,7 +323,7 @@
 								onclick={onClose}
 								class="px-4 py-2 rounded-lg border border-slate-300 text-sm font-semibold text-slate-600 hover:bg-slate-50 cursor-pointer"
 							>
-								Cancel
+								Cancelar
 							</button>
 							<button 
 								type="submit"
@@ -331,27 +331,27 @@
 							>
 								{#if manualSuccess}
 									<Check class="w-4 h-4 text-emerald-300" />
-									<span>Saved!</span>
+									<span>¡Guardado!</span>
 								{:else}
 									<PlusCircle class="w-4 h-4" />
-									<span>Commit Shift Reading</span>
+									<span>Guardar Registro</span>
 								{/if}
 							</button>
 						</div>
 
 					</form>
 				{:else}
-					<!-- CSV / Bulk Upload Section -->
+					<!-- Sección CSV -->
 					<div class="space-y-4">
 						<div class="flex items-center justify-between">
 							<p class="text-xs text-slate-500">
-								Paste comma-delimited shift records or load a pre-formatted template:
+								Pegue los registros separados por comas o cargue la plantilla base:
 							</p>
 							<button 
 								onclick={handleLoadSampleCsv}
 								class="text-xs font-semibold text-sky-700 hover:text-sky-800 underline cursor-pointer"
 							>
-								Insert Sample CSV Template
+								Cargar Plantilla CSV de Ejemplo
 							</button>
 						</div>
 
@@ -370,12 +370,12 @@
 							</div>
 						{/if}
 
-						<!-- Parsed rows preview -->
+						<!-- Vista previa de filas procesadas -->
 						{#if parsedRows.length > 0}
 							<div class="rounded-lg border border-slate-200 overflow-hidden">
 								<div class="bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 flex justify-between">
-									<span>Validation Passed ({parsedRows.length} rows ready)</span>
-									<span class="text-emerald-700 font-mono">Format OK</span>
+									<span>Validación Exitosa ({parsedRows.length} registros listos)</span>
+									<span class="text-emerald-700 font-mono">Formato Correcto</span>
 								</div>
 								<div class="max-h-36 overflow-y-auto divide-y divide-slate-100 text-xs">
 									{#each parsedRows as r}
@@ -395,7 +395,7 @@
 								onclick={onClose}
 								class="px-4 py-2 rounded-lg border border-slate-300 text-sm font-semibold text-slate-600 hover:bg-slate-50 cursor-pointer"
 							>
-								Cancel
+								Cancelar
 							</button>
 							<button 
 								type="button"
@@ -404,10 +404,10 @@
 								class="inline-flex items-center space-x-2 px-5 py-2 rounded-lg bg-sky-700 hover:bg-sky-800 disabled:opacity-50 text-white text-sm font-bold shadow-sm transition-all cursor-pointer"
 							>
 								{#if isSubmitting}
-									<span>Committing...</span>
+									<span>Guardando en BD...</span>
 								{:else}
 									<UploadCloud class="w-4 h-4" />
-									<span>Batch Ingest {parsedRows.length > 0 ? `(${parsedRows.length})` : ''}</span>
+									<span>Cargar Lote {parsedRows.length > 0 ? `(${parsedRows.length})` : ''}</span>
 								{/if}
 							</button>
 						</div>

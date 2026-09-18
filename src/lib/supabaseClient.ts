@@ -1,6 +1,12 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import { INITIAL_SITES, INITIAL_KPI_DEFINITIONS, getInMemorySummaryRows, insertInMemoryKpiValues } from './mockData';
-import type { Site, SiteSummaryRow } from './types/kpi';
+import { 
+    INITIAL_SITES, 
+    INITIAL_KPI_DEFINITIONS, 
+    getInMemorySummaryRows, 
+    insertInMemoryKpiValues,
+    getInMemoryFinancialLedgers
+} from './mockData';
+import type { Site, SiteSummaryRow, FinancialLedgerRecord } from './types/kpi';
 
 // Read env variables if available in client or server
 const supabaseUrl = 
@@ -84,6 +90,8 @@ class ResilientQueryBuilder<T> {
             dataset = [...INITIAL_KPI_DEFINITIONS];
         } else if (this.tableName === 'v_daily_site_summary') {
             dataset = getInMemorySummaryRows();
+        } else if (this.tableName === 'financial_ledgers' || this.tableName === 'v_financial_audit_summary') {
+            dataset = getInMemoryFinancialLedgers();
         } else {
             dataset = [];
         }

@@ -1,7 +1,8 @@
 import { supabase } from '$lib/supabaseClient';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
-import type { Site, SiteSummaryRow } from '$lib/types/kpi';
+import type { Site, SiteSummaryRow, FinancialLedgerRecord } from '$lib/types/kpi';
+import { getInMemoryFinancialLedgers } from '$lib/mockData';
 
 export const load: PageLoad = async ({ params, parent }) => {
     const { siteSlug } = params;
@@ -43,11 +44,21 @@ export const load: PageLoad = async ({ params, parent }) => {
 
     const latestKpis = Object.values(latestKpiMap);
 
+    // Load financial ledgers for this site
+    const { data: rawLedgers } = await supabase
+        .from('financial_ledgers')
+        .select('*')
+        .order('fiscal_date', { ascending: false });
+
+    const allLedgers = (rawLedgers && rawLedgers.length > 0 ? rawLedgers : getInMemoryFinancialLedgers()) as FinancialLedgerRecord[];
+    const siteLedgers = allLedgers.filter(l => l.site_id === site.id || l.site_slug === siteSlug);
+
     return {
         site,
         latestKpis: (latestKpis || []) as SiteSummaryRow[],
         history: (history || []) as SiteSummaryRow[],
         historyMap,
-        allSites
+        allSites,
+        financialLedgers: (siteLedgers.length > 0 ? siteLedgers : allLedgers) as FinancialLedgerRecord[]
     };
 };

@@ -1,5 +1,5 @@
 export type SiteType = 'refinery' | 'petrochemical' | 'lng' | 'mining';
-export type KpiCategory = 'throughput' | 'yield' | 'financial' | 'utility' | 'reliability' | 'hse';
+export type KpiCategory = 'throughput' | 'yield' | 'financial' | 'utility' | 'reliability' | 'hse' | 'financial_audit';
 export type KpiDataType = 'number' | 'percentage' | 'currency' | 'ratio';
 
 export interface Site {
@@ -94,4 +94,55 @@ export interface ExecutiveShiftBrief {
     }[];
     handoverDirectives: string[];
     hseNotice: string;
+}
+
+export interface FinancialLedgerRecord {
+    id: string;
+    site_id: string;
+    site_slug?: string;
+    site_name?: string;
+    fiscal_date: string;
+    gross_volume_produced: number;   // bpd, MT, or TM
+    unit_measure: 'bpd' | 'MT' | 'TM';
+    realized_price_per_unit: number; // $/bbl or $/MT
+    direct_opex_per_unit: number;    // $/unit
+    gross_revenue_usd: number;
+    total_opex_usd: number;
+    net_margin_usd: number;
+    days_sales_outstanding: number;  // days
+    settled_cash_usd: number;
+    pending_receivables_usd: number;
+    shrinkage_loss_usd: number;      // Unaccounted volume loss converted to $
+    gov_royalty_pct: number;
+    infrastructure_fund_pct: number;
+    community_dividend_pct: number;
+    operational_reserve_pct: number;
+    gov_royalty_usd?: number;
+    infrastructure_fund_usd?: number;
+    community_dividend_usd?: number;
+    operational_reserve_usd?: number;
+    notes?: string;
+}
+
+export interface BasinFinancialSummary {
+    totalGrossRevenueUsd: number;
+    totalOpexUsd: number;
+    totalNetMarginUsd: number;
+    totalSettledCashUsd: number;
+    totalPendingReceivablesUsd: number;
+    totalShrinkageLossUsd: number;
+    weightedDsoDays: number;
+    
+    // Physical volumes
+    refineryVolumeBpd: number;
+    petrochemicalVolumeMt: number;
+    
+    // Distribution breakdown pools
+    infrastructureFundUsd: number;
+    govRoyaltyUsd: number;
+    communityDividendUsd: number;
+    operationalReserveUsd: number;
+    
+    // Latest fiscal date
+    fiscalDate: string;
 }
